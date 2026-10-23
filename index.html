@@ -1,11 +1,14 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EFNB Study Notes</title><script src="extra.js"></script></head><body style="font-family:sans-serif;padding:2em">Loading notes...<script>
 (async function(){
 let r=await fetch('base.html',{cache:'no-store'});
-if(!r.ok) r=await fetch('index.html',{cache:'no-store'});
+if(!r.ok){document.body.textContent='base.html not found.';return;}
 let t=await r.text();
 if(t.indexOf('const DATA=')<0){document.body.textContent='Base notes file not found.';return;}
+const CL='<'+'/script>';
 const inj='(function(){var X='+JSON.stringify(window.EXTRA)+';["en","zh"].forEach(function(l){for(var i=1;i<=6;i++){DATA[l][i].q=DATA[l][i].q.concat(X.add[i-1]);}DATA[l][8].q=X.mock;});})();\ngo(0);';
-t=t.replace(/go\(0\);\s*<\/script>/,function(){return inj+'\n</script>';});
+const k=t.lastIndexOf('go(0);');
+if(k<0){document.body.textContent='Patch point not found.';return;}
+t=t.slice(0,k)+inj+'\n'+CL+'</body></html>';
 document.open();document.write(t);document.close();
 })();
 </script></body></html>
